@@ -1,4 +1,3 @@
-# backend/utils/hhparser/template_parser.py
 import json
 import re
 from .vacancy_decorator import SearchedVacancyDecorator, ViewVacancyDecorator
@@ -10,17 +9,14 @@ class DumpParser:
         if not page:
             return {}
         
-        # 🔥 Поиск тега noindex с проверкой на None
         noindex_tag = page.find('noindex')
         if not noindex_tag:
-            # 🔥 Альтернативный поиск: иногда данные в script[type="application/ld+json"]
             script_tag = page.find('script', type='application/ld+json')
             if script_tag and script_tag.string:
                 try:
                     return json.loads(script_tag.string)
                 except:
                     pass
-            # 🔥 Ещё вариант: поиск по атрибуту data-qa
             qa_tag = page.find(attrs={'data-qa': 'vacancy-json-data'})
             if qa_tag and qa_tag.get('data-qa'):
                 try:
@@ -29,7 +25,6 @@ class DumpParser:
                     pass
             return {}
         
-        # 🔥 Безопасное извлечение содержимого
         raw_json = None
         for ch in noindex_tag.children:
             if hasattr(ch, 'contents') and ch.contents:
@@ -49,7 +44,6 @@ class DumpParser:
                 ensure_ascii=False
             ))
         except json.JSONDecodeError:
-            # 🔥 Если не распарсилось — пробуем очистить строку
             try:
                 clean = re.sub(r'[\x00-\x1F\x7F]', '', raw_json)
                 return json.loads(clean)

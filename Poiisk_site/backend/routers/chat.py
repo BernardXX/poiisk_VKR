@@ -83,8 +83,6 @@ def chat(msg: Message, session_id: Optional[int] = None, user_id: int = None):
         messages_for_ai = [{"role": "system", "content": sys_prompt}] + history
         answer = ask_gigachat(messages_for_ai)
 
-        # 🔥 ИЗМЕНЕНИЕ: Сохраняем сообщение с metadata (если есть вакансии)
-        # Для простоты пока сохраняем без metadata, но структуру оставляем
         cur.execute("""
             INSERT INTO messages (session_id, role, content, metadata, created_at)
             VALUES (%s, 'assistant', %s, %s, NOW())

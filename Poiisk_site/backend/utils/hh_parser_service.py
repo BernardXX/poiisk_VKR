@@ -1,4 +1,3 @@
-# backend/utils/hh_parser_service.py
 import sys
 import os
 from datetime import datetime, timedelta
@@ -16,9 +15,6 @@ except ImportError:
     print(f"   Убедитесь, что файлы (scrapper.py и др.) лежат в: {current_dir}/hhparser/")
     raise
 
-# Простое кэширование на 5 минут
-_cache = {}
-CACHE_DURATION = timedelta(minutes=5)
 
 def search_vacancies_hhparser(
     query: str,
@@ -55,7 +51,6 @@ def search_vacancies_hhparser(
         for vac in vacancies[:per_page]: 
             salary = vac.get("salary")
             salary_text = "Не указана"
-            # 🔥 ИСПРАВЛЕНИЕ ЗДЕСЬ:
             if salary and isinstance(salary, dict):
                 fr, to = salary.get("from"), salary.get("to")
                 

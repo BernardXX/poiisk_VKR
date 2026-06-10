@@ -1,4 +1,3 @@
-# backend/utils/skill_matcher.py
 import re
 from typing import List, Dict, Set
 
@@ -71,50 +70,8 @@ def extract_skills_from_text(text: str) -> Set[str]:
             if skill in text_lower:
                 found_skills.add(normalize_skill(skill))
         else:
-            # Для одиночных слов — поиск с границами
             pattern = r'\b' + re.escape(skill) + r'\b'
             if re.search(pattern, text_lower):
                 found_skills.add(normalize_skill(skill))
     
     return found_skills
-
-
-def calculate_skill_match(
-    user_skills: List[str],
-    vacancy_text: str,
-    vacancy_key_skills: List[str] = None
-) -> tuple:
-    """
-    Рассчитывает совпадения и недостающие навыки
-    
-    :return: (matched_skills, missing_skills, skill_score)
-    """
-    # Нормализуем навыки пользователя
-    user_skills_normalized = {normalize_skill(s) for s in user_skills if s}
-    
-    vacancy_skills = set()
-    
-    if vacancy_key_skills:
-        if isinstance(vacancy_key_skills, list):
-            for s in vacancy_key_skills:
-                if isinstance(s, str):
-                    vacancy_skills.add(normalize_skill(s))
-        elif isinstance(vacancy_key_skills, str):
-            for s in vacancy_key_skills.split(','):
-                vacancy_skills.add(normalize_skill(s.strip()))
-    
-    extracted = extract_skills_from_text(vacancy_text)
-    vacancy_skills.update(extracted)
-    
-    matched = user_skills_normalized & vacancy_skills
-    
-    missing = vacancy_skills - user_skills_normalized
- 
-    score = 0
-    for skill in matched:
-        if skill in {normalize_skill(s) for s in (vacancy_key_skills or [])}:
-            score += 5  # Явное указание в key_skills
-        else:
-            score += 2  # Найдено в описании
-    
-    return list(matched), list(missing)[:10], min(score, 50) 

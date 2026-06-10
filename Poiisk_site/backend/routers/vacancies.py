@@ -325,7 +325,7 @@ def search_vacancies(user_id: int = Query(...)):
                     "matched_skills": matched,
                     "missing_skills": missing,
                     "location_match": location_match_score(vacancy, location),
-                    "matched_count": len(matched)  # 🔥 Для сортировки
+                    "matched_count": len(matched)
                 }
                 matched_vacancies.append(vacancy_with_score)
 

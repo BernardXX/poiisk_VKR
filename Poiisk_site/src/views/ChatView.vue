@@ -261,7 +261,7 @@ async function searchVacancies() {
 // Проверяем профиль при загрузке компонента
 onMounted(async () => {
   await sidebarRef.value?.loadChats()
-  await checkProfileCompleteness() // 🔥 Новая проверка
+  await checkProfileCompleteness() 
   
   const savedSessionId = localStorage.getItem('activeSessionId')
   if (savedSessionId) {

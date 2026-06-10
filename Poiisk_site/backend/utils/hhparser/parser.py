@@ -35,7 +35,6 @@ class Parser:
         vacancy = {}
         response_parsed = self.scrapper.get_vacancy_page(url)
         
-        # 🔥 Проверка, что страница загрузилась
         if not response_parsed:
             print(f"⚠️ Не удалось загрузить страницу: {url}")
             return {
@@ -49,7 +48,6 @@ class Parser:
         vacancy["salary"] = response_parsed.find("div",attrs = {"data-qa": 'vacancy-salary'}).get_text()        
         vacancy["company_name"] = response_parsed.find("a",attrs = {"data-qa": 'vacancy-company-name',"class": 'vacancy-company-name'}).get_text()              
         vacancy["description"] = response_parsed.find("div",attrs = {"class": 'vacancy-section'}).get_text()      
-        #vacancy["company_verified"] = response_parsed.find("div", attrs = {"class": 'vacancy-company-badge'}).find("a",{"class": 'bloko-link', "href":'https://feedback.hh.ru/article/details/id/5951'}) and True
         vacancy["company_verified"] = response_parsed.find("div", attrs = {"class": 'vacancy-company-badge'}) and True
       
         full_adress = response_parsed.find("span",attrs = {"data-qa": 'vacancy-view-raw-address'})
@@ -69,7 +67,6 @@ class Parser:
         tags = response_parsed.find_all("div",attrs = {"class": 'bloko-tag bloko-tag_inline',"data-qa": 'bloko-tag bloko-tag_inline skills-element'})
         vacancy["tag"] = list(tag.get_text() for tag in tags)
         
-        # на скорую руку подчищаем вывод
         for key in vacancy:
             if type(vacancy[key]) == str:
                 vacancy[key] = Decorator.sanitize_string(vacancy[key])

@@ -1,4 +1,3 @@
-# backend/utils/superjob_service.py
 import os
 import requests
 import re
@@ -8,31 +7,6 @@ from utils.skill_matcher import extract_skills_from_text
 load_dotenv()
 
 SUPERJOB_SECRET_KEY = os.getenv("SUPERJOB_SECRET_KEY", "")
-
-def _extract_skills_from_text(text: str) -> list:
-    """Простой парсинг навыков из текста описания"""
-    if not text:
-        return []
-    
-    common_skills = [
-        'python', 'javascript', 'typescript', 'java', 'c#', 'c++', 'php', 'ruby', 'go', 'rust',
-        'vue', 'vue.js', 'react', 'react.js', 'angular', 'node.js', 'django', 'flask', 'fastapi',
-        'postgresql', 'mysql', 'mongodb', 'redis', 'docker', 'kubernetes', 'git', 'linux',
-        'aws', 'azure', 'gcp', 'terraform', 'jenkins', 'ci/cd', 'rest', 'graphql',
-        'html', 'css', 'scss', 'sass', 'webpack', 'vite', 'npm', 'yarn'
-    ]
-    
-    text_lower = text.lower()
-    found_skills = []
-    
-    for skill in common_skills:
-        if re.search(r'\b' + re.escape(skill) + r'\b', text_lower, re.IGNORECASE):
-            for s in common_skills:
-                if s.lower() == skill:
-                    found_skills.append(s)
-                    break
-    
-    return list(set(found_skills))
 
 def search_superjob(query: str, city_id: int = 0, per_page: int = 10) -> list:
     """

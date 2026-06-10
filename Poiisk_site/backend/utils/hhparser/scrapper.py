@@ -3,8 +3,6 @@ import requests, re, time, random
 from requests import exceptions as reqexc
 from fake_headers import Headers
 
-# 🔥 Импорты прокси закомментированы, так как библиотека несовместима с новым Python
-# from .proxy import Proxy
 
 class VacancyScrapper:
     __url_search = "https://hh.ru/search/vacancy"
@@ -33,14 +31,13 @@ class VacancyScrapper:
     }
 
     sleep_time = {
-        'min': 0.3,  # 🔥 Увеличили минимальную задержку, чтобы не блокировали
+        'min': 0.3, 
         'max': 1.0
     }
 
     def __init__(self, params=None, sleep_time=None):
         if sleep_time: self.sleep_time = sleep_time
         if params: self.params = params
-        # 🔥 Убрали инициализацию прокси: self.proxy = Proxy()
 
     def __wait(self):
         time.sleep(self.sleep_time["min"]+(random.random()*(self.sleep_time["max"]-self.sleep_time["min"])))
@@ -54,13 +51,11 @@ class VacancyScrapper:
             params = self.params if use_params else None
             print(url)
             
-            # 🔥 Прямой запрос без прокси
             response = requests.get(url, 
                                     headers=self.__fake_header.generate() or self.headers, 
                                     params=params,
                                     timeout=15)
             
-            # 🔥 Проверка статуса ответа
             if response.status_code != 200:
                 print(f"⚠️ HTTP {response.status_code} для {url}")
                 return None
@@ -68,7 +63,7 @@ class VacancyScrapper:
             unparsed = soup(response.text, 'html.parser')
         except exceptions as err: 
             print(f"get page error: {str(err)}")
-            return None  # 🔥 Возвращаем None вместо рекурсии
+            return None  
 
         return unparsed  
 
@@ -83,7 +78,7 @@ class VacancyScrapper:
 
     def get_page_count(self):            
         response = self.get_searching_results_page()
-        if not response: return 1 # 🔥 Если ошибка, возвращаем 1 страницу
+        if not response: return 1 
         
         pager_buttons = response.select("div[data-qa='pager-block'] a[class='bloko-button'][data-qa='pager-page']")  
         page_numbers = [] 
@@ -104,7 +99,7 @@ class VacancyScrapper:
             vacancys_on_page = False       
             while not vacancys_on_page:                
                 response = self.get_searching_results_page(page_number=i)
-                if not response: break # 🔥 Выход, если ошибка
+                if not response: break 
                 
                  # ищем блоки с вакансиями
                 vacancys_on_page = response.find_all("div", attrs={"class": 'vacancy-serp-item'})  
